@@ -532,6 +532,8 @@ MTU:        : 1500
 
 `10.1.1.245`, ça a l'air bon.
 
+
+
 <u>
 
 #### 3.2.2. Spoofing & Race.
