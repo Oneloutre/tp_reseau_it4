@@ -3,7 +3,7 @@
 ---
 
 <u>
-Sommaire</u>
+Sommaire: </u>
 
 - [**Partie I : Setup initial**](./init.md)
     - une topologie simpliste et limitée
@@ -88,4 +88,85 @@ PC3> ping 1.1.1.1
 84 bytes from 1.1.1.1 icmp_seq=2 ttl=57 time=45.630 ms
 84 bytes from 1.1.1.1 icmp_seq=3 ttl=57 time=59.403 ms
 84 bytes from 1.1.1.1 icmp_seq=4 ttl=57 time=62.303 ms
+```
+---
+
+## Partie 2 :
+
+### A. VLANs
+**Test de `ping`**
+```
+PC1> ping 10.3.1.2
+
+84 bytes from 10.3.1.2 icmp_seq=1 ttl=64 time=2.770 ms
+84 bytes from 10.3.1.2 icmp_seq=2 ttl=64 time=2.900 ms
+84 bytes from 10.3.1.2 icmp_seq=3 ttl=64 time=3.001 ms
+```
+
+### B. Routeur
+**Tests de `ping`**
+```
+R1#ping 10.3.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.3.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 45/47/52 ms
+R1#ping 10.3.2.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.3.2.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 36/42/50 ms
+R1#ping 10.3.1.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.3.1.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 40/44/50 ms
+```
+
+```
+PC1> sh ip
+
+NAME        : PC1[1]
+IP/MASK     : 10.3.1.1/24
+GATEWAY     : 10.3.1.254
+DNS         : 
+MAC         : 00:50:79:66:68:00
+LPORT       : 10008
+RHOST:PORT  : 127.0.0.1:10008
+MTU         : 1500
+
+PC1> ping 10.3.2.1
+
+84 bytes from 10.3.2.1 icmp_seq=1 ttl=63 time=15.155 ms
+84 bytes from 10.3.2.1 icmp_seq=2 ttl=63 time=16.453 ms
+84 bytes from 10.3.2.1 icmp_seq=3 ttl=63 time=18.132 ms
+```
+
+**Tests de `ping`**
+```
+R1#ping 1.1.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 1.1.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 72/80/96 ms
+```
+
+```
+PC1> ping 1.1.1.1
+
+84 bytes from 1.1.1.1 icmp_seq=1 ttl=59 time=21.540 ms
+84 bytes from 1.1.1.1 icmp_seq=2 ttl=59 time=28.474 ms
+84 bytes from 1.1.1.1 icmp_seq=3 ttl=59 time=33.391 ms
+```
+
+```
+PC2> ping 1.1.1.1        
+
+84 bytes from 1.1.1.1 icmp_seq=1 ttl=59 time=30.589 ms
+84 bytes from 1.1.1.1 icmp_seq=2 ttl=59 time=25.398 ms
+84 bytes from 1.1.1.1 icmp_seq=3 ttl=59 time=28.246 ms
 ```
